@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Sidebar Toogle
+    const token = localStorage.getItem('danchouToken');
+
+    // Sidebar Toggle
     const sidebarToggle = document.querySelector(".sidebar-toggle");
     var sidebar_state = 0;
 
@@ -20,13 +22,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const settings = document.querySelector('.settings-btn');
     settings.addEventListener('click', function() {
         if (confirm("Are you sure you want to log out?")) {
-            window.location.href = '/';
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const logoutApi = `/api/logout`;
+            fetch(logoutApi, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return res.json();
+            }).then(data => {
+
+                if (data.status != 200) {
+                    alert('Logout failed')
+                }
+
+                localStorage.removeItem('danchouToken');
+                window.location.href = '/';
+            })
+            
         }
     });
 
     // Populate Table 
-    const usersApi = '/api/get_users';
-    fetch(usersApi)
+    const usersApi = `/api/get_users`;
+    fetch(usersApi, {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
     .then(res => res.json())
     .then(data => {
         const thead = document.querySelector('#column-name');

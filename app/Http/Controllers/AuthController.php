@@ -29,15 +29,35 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
 
+            $request->session()->regenerate();
+            $request->session()->put('user_id', Auth::user()->id);
+            $request->session()->put('user_email', Auth::user()->email);
+
+            $token = auth()->user()->createToken('31C073W')->plainTextToken;
             return [
                 'status' => 200,
-                'message' => 'Password and Email matched'
+                'message' => 'Password and Email matched',
+                'token' => $token
             ];
         }
 
         return [
             'status' => 400,
             'error' => 'Password and Email does not match'
+        ];
+    }
+
+    public function logout(Request $request)
+    {
+        // Session::flush();
+        // Auth::logout();
+
+        $request->user()->tokens()->delete();
+        $request->session()->regenerateToken();
+
+        return [
+            'status' => 200,
+            'message' => 'Successfully logged out'
         ];
     }
 
@@ -73,8 +93,7 @@ class AuthController extends Controller
 
         return [
             'status' => 200,
-            'message' => 'Data Validated',
-            'data' => $data
+            'message' => 'Data Validated'
         ];
     }
 }

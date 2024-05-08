@@ -8,11 +8,13 @@ document.addEventListener("DOMContentLoaded", function (e) {
         // const emailKey = 'email';
         // const passKey = 'password';
 
-         const loginApi = `/api/login`;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const loginApi = `/api/login`;
         fetch(loginApi, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
             },
             body: JSON.stringify({
                 email: loginEmail,
@@ -41,10 +43,12 @@ document.addEventListener("DOMContentLoaded", function (e) {
                 }
 
                 if (data.status == 200) {
+                    // console.log(data.token);
+                    localStorage.setItem('danchouToken', data.token)
                     window.location.href = '/dashboard';
                 } 
 
-                console.log(data.error);
+                // console.log(data.error);
             });
     });
 });

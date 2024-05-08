@@ -20,9 +20,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+
+    Route::get('/get_users', [UserController::class, 'index'])->name('users.get');
+    Route::post('/post_users', [UserController::class, 'store'])->name('users.post');
+    Route::get('/search_users/{key}/{value}', [UserController::class, 'search'])->name('users.search');
+});
+
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+
 Route::post('/validate', [AuthController::class, 'validate_user'])->name('api.validate');
 
-Route::get('/get_users', [UserController::class, 'index'])->name('users.get');
-Route::post('/post_users', [UserController::class, 'store'])->name('users.post');
-Route::get('/search_users/{key}/{value}', [UserController::class, 'search'])->name('users.search');
+// Route::get('/get_users', [UserController::class, 'index'])->name('users.get');
+// Route::post('/post_users', [UserController::class, 'store'])->name('users.post');
+// Route::get('/search_users/{key}/{value}', [UserController::class, 'search'])->name('users.search');
