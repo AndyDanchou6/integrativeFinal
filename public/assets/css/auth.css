@@ -185,3 +185,93 @@ h6 {
 .reg-redirect a:hover {
     color: var(--secondary-color);
 }
+
+/* OTP Verification */
+.otp-verify {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 250px;
+    background-color: var(--bg-color);
+    box-shadow: 0 0 10px var(--main-color);
+    border-radius: 10px;
+}
+
+.otp-verify h2 {
+    align-self: center;
+    margin-top: 20px;
+}
+
+.otp-verify p, .otp-verify a {
+    align-self: center;
+    margin-top: 10px;
+}
+
+.otp-verify a {
+    color: var(--main-color);
+    cursor: pointer;
+}
+
+.otp-verify a:hover {
+    color: var(--secondary-color);
+}
+
+.otp-verify input, .otp-verify button {
+    align-self: center;
+    width: 90%;
+    height: 50px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.otp-verify button {
+    height: 40px;
+    margin-top: 10px;
+    background-color: var(--main-color);
+}
+
+.otp-verify button p {
+    margin: auto;
+}
+
+/* Pop ups */
+
+.unauthorized {
+    display: flex;
+    justify-content: center;   
+    align-items: center;
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 70px;
+    width: 100%;
+    background-color: var(--secondary-color);
+}
+
+.warning {
+    color: var(--highlight-color);
+    text-shadow: var(--bg-color);
+}
+
+.error-handling {
+    display: none;
+    justify-content: center;   
+    align-items: center;
+    position: fixed;
+    top: 75px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100px;
+    width: 400px;
+    background-color: var(--secondary-color);
+    border-radius: 20px;
+}
+
+.error-handling p {
+    align-self: center;
+}

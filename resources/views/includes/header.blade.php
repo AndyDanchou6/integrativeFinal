@@ -9,9 +9,9 @@
     <div class="brand-name container">
         <h1>Danchou</h1>
     </div>
-    <div class="settings-btn container">
+    <div class="profile container">
         <div class="img-wrap">
-            <img src="assets/img/bg2.jpg" alt="">
+            <img src="assets/img/bg2.jpg" alt="Profile Photo">
         </div>
     </div>
 </section>

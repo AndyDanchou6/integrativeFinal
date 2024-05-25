@@ -1,93 +1,72 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const token = localStorage.getItem('danchouToken');
-
-    // Sidebar Toggle
-    const sidebarToggle = document.querySelector(".sidebar-toggle");
-    var sidebar_state = 0;
-
-    sidebarToggle.addEventListener("click", function () {
-        const sidebar = document.querySelector("#sidebar");
-
-        if (sidebar_state == 0) {
-            sidebar.style.left = "0";
-            sidebar_state = 1;
-        } else {
-            sidebar.style.left = "-260px";
-            sidebar_state = 0;
-        }
-        // console.log(sidebar_state);
-    });
-
-    // Settings Button
-    const settings = document.querySelector('.settings-btn');
-    settings.addEventListener('click', function() {
-        if (confirm("Are you sure you want to log out?")) {
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// Logout function
+function logout() {
+    const logoutMessage = "Are you sure you want to logout?";
+    confirmPopUp(logoutMessage, function (result) {
+        if (result == 1) {
             const logoutApi = `/api/logout`;
+
             fetch(logoutApi, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                return res.json();
-            }).then(data => {
-
-                if (data.status != 200) {
-                    alert('Logout failed')
-                }
-
-                localStorage.removeItem('danchouToken');
-                window.location.href = '/';
+                    "X-CSRF-TOKEN": csrfToken,
+                    Authorization: `Bearer ${token}`,
+                },
             })
-            
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+
+                    return res.json();
+                })
+                .then((data) => {
+                    if (data.status != 200) {
+                        alert("Logout failed");
+                    }
+
+                    localStorage.removeItem("danchouToken");
+                    localStorage.removeItem("danchouEmail");
+                    window.location.href = "/";
+                });
         }
     });
+}
 
-    // Populate Table 
-    const usersApi = `/api/get_users`;
-    fetch(usersApi, {
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-        const thead = document.querySelector('#column-name');
-        const tbody = document.querySelector('#data-fields');
+// Sidebar Toggle
+const sidebarToggle = document.querySelector(".sidebar-toggle");
+const sidebar = document.querySelector("#sidebar");
+var sidebar_state = 0;
 
-        if (data.status == 200) {
-            const users = data.data;
-            const columnNames = `
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Email</th>
-            </tr>
-            `;
-
-            thead.innerHTML = columnNames;
-            let list = '';
-
-            users.forEach(user => {
-                list +=
-                `<tr>
-                        <td>${user.id}</td>
-                        <td>${user.username}</td>
-                        <td>${user.email}</td>
-                </tr>
-                `;
-            });
-            
-            tbody.innerHTML = list;
-        }
-        console.log(data);
-    });
+sidebarToggle.addEventListener("click", function () {
+    if (sidebar_state == 0) {
+        sidebar.style.left = "0";
+        sidebar_state = 1;
+    } else {
+        sidebar.style.left = "-260px";
+        sidebar_state = 0;
+    }
 });
+
+// Pop up prompt
+function confirmPopUp(message, callback) {
+    const popUpConfirm = document.querySelector(".pop-ups");
+    popUpConfirm.style.display = "flex";
+    popUpConfirm.style.flexDirection = "column";
+    popUpConfirm.style.justifyContent = "center";
+    popUpConfirm.style.alignItems = "center";
+    popUpConfirm.style.zIndex = 5;
+
+    popUpConfirm.firstElementChild.innerHTML = message;
+
+    const cancel = document.querySelector("#cancel-btn");
+    cancel.addEventListener("click", function () {
+        popUpConfirm.style.display = "none";
+        callback(0);
+    });
+
+    const confirm = document.querySelector("#ok-btn");
+    confirm.addEventListener("click", function () {
+        popUpConfirm.style.display = "none";
+        callback(1);
+    });
+}

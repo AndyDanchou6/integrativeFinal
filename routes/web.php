@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('auth.login');
 })->name('login');
 
+Route::get('/verify', function () {
+    return view('auth.otpVerify');
+})->name('verify_otp');
+
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
@@ -24,3 +28,13 @@ Route::get('/register', function () {
 Route::get('/dashboard', function () {
     return view('admin.adminDashboard');
 })->name('admin.dashboard');
+
+Route::get('/profile', function () {
+    return view('admin.adminProfile');
+})->name('admin.profile');
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('admin.adminDashboard');
+//     })->name('admin.dashboard');
+// });

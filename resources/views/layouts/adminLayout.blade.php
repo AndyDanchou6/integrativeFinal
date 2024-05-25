@@ -7,6 +7,19 @@
     <title>@yield('title', 'Danchou')</title>
 
     <link rel="stylesheet" href="assets/css/admin.css">
+
+    <script>
+        const token = localStorage.getItem('danchouToken');
+
+        if (!token) {
+            window.location.href = '/';
+        }
+
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+    </script>
+
 </head>
 
 <body>
@@ -23,6 +36,10 @@
         <!-- Footer -->
         @include('includes.footer')
     </section>
+
+    @include('includes.popUp')
+
+    @yield('script')
 
     <script src="assets/js/admin.js"></script>
 </body>

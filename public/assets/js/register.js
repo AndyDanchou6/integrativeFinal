@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 // Validation errors
                 if (data.status == 422) {
-                    errors = data.error;
+                    errors = data.message;
 
                     if (errors.username) {
                         alert(errors.username);
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (data.status == 400) {
-                    alert(data.error);
+                    alert(data.message);
                 }
                 
                 if (data.status == 200) {
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
                             // Not Created
                             if (data.status == 500) {
-                                alert(data.error);
+                                alert(data.message);
                             }
                         });
                     }

@@ -19,7 +19,7 @@ class UserController extends Controller
         if ($users->isEmpty()) {
             return [
                 'status' => 404,
-                'error' => 'Data not found'
+                'message' => 'Data not found'
             ];
         }
 
@@ -30,30 +30,84 @@ class UserController extends Controller
         ];
     }
 
+    public function validate_user(Request $request)
+    {
+        try {
+            $validated = Validator::make($request->all(), [
+                'username' => 'required|string|max:255',
+                'email' => 'required|email',
+                'password' => 'required|min:8|confirmed',
+                'phoneNo' => 'required|string',
+                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            if ($validated->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validated->errors()
+                ]);
+            }
+
+            $exists = User::where('email', $request['email'])->get();
+
+            if ($exists->isEmpty() == false) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Email Already Exists'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data Validated',
+                'data' => $request->all()
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $newUser = [
-            'username' => $request['username'],
-            'email' => $request['email'],
-            'password' => $request['password']
-        ];
-
-        $created = User::create($newUser);
-
-        if (!$created) {
-            return [
-                'status' => 500,
-                'error' => 'User Creation Failed'
+        try {
+            $newUser = [
+                'username' => $request['username'],
+                'email' => $request['email'],
+                'phoneNo' => $request['phoneNo'],
+                'password' => Hash::make($request['password'])
             ];
-        }
 
-        return [
-            'status' => 201,
-            'message' => 'User Created Successfully'
-        ];
+            if ($request->hasFile('image')) {
+                $pictureFile = $request->file('image')->store('images', 'images');
+
+                $newUser['image'] = $pictureFile;
+            }
+
+            $created = User::create($newUser);
+
+            if (!$created) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'User Creation Failed'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 201,
+                'message' => 'User Created Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -66,7 +120,7 @@ class UserController extends Controller
         if ($found->isEmpty()) {
             return [
                 'status' => 404,
-                'error' => 'No Data Found'
+                'message' => 'No Data Found'
             ];
         }
 
