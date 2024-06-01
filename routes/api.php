@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MailSender;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,13 +25,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/validate', [UserController::class, 'validate_user'])->name('users.validate');
     Route::post('/post_users', [UserController::class, 'store'])->name('users.post');
     Route::get('/search_users/{key}/{value}', [UserController::class, 'search'])->name('users.search');
+
+    Route::post('/sendMail', [MailSender::class, 'sendMail']);
 });
 
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/verify', [AuthController::class, 'verifyOtp'])->name('auth.verify');
 
-
-
 // Route::get('/get_users', [UserController::class, 'index'])->name('users.get');
 // Route::post('/post_users', [UserController::class, 'store'])->name('users.post');
 // Route::get('/search_users/{key}/{value}', [UserController::class, 'search'])->name('users.search');
+// Route::get('/sendMail', [MailSender::class, 'sendMail']);

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// use App\Mail\Usermail;
+// use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +39,10 @@ Route::get('/profile', function () {
 //     Route::get('/dashboard', function () {
 //         return view('admin.adminDashboard');
 //     })->name('admin.dashboard');
+// });
+
+
+// Route::get('/sendMail/{username}/{email}/{password}', function () {
+
+//     Mail::to('dvoid367@gmail.com')->send(new Usermail());
 // });

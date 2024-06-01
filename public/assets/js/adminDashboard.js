@@ -67,6 +67,32 @@ function createResponseMessage(message, parentElement, responseType) {
     parentElement.insertBefore(errorMessage, parentElement.firstChild);
 }
 
+// Send Mail after creation
+// function sendMail(username, email, password) {
+//     const mailApi = `api/sendMail`;
+//     return fetch(mailApi, {
+//         method: "POST",
+//         headers: {
+//             "X-CSRF-TOKEN": csrfToken,
+//             Authorization: `Bearer ${token}`,
+//             "Content-Type": "application/json",
+//             Accept: "application/json",
+//         },
+//         body: JSON.stringify({
+//             username: username,
+//             email: email,
+//             password: password,
+//         }),
+//     })
+//         .then((res) => res.json())
+//         .then((data) => {
+//             return data;
+//         })
+//         .catch((error) => {
+//             console.error("Error:", error);
+//         });
+// }
+
 // Add new user function
 function addUser() {
     const popUpForm = document.querySelector(".popUpForm");
@@ -87,6 +113,8 @@ function addUser() {
 
         var formData = new FormData(submitForm);
 
+        // console.log(formData.get("email"));
+
         fetch(validateFormApi, {
             method: "POST",
             headers: {
@@ -103,7 +131,6 @@ function addUser() {
                 return res.json();
             })
             .then((data) => {
-                // Display Error on form
                 if (data.status != 200) {
                     const formFields = document.getElementById("form-fields");
 
@@ -156,11 +183,59 @@ function addUser() {
                                 .then((data) => {
                                     const formContainer =
                                         document.querySelector("#form-fields");
-                                    createResponseMessage(
-                                        data.message,
-                                        formContainer,
-                                        "success"
-                                    );
+
+                                    if (data.status == 201) {
+                                        let username =
+                                            document.querySelector(
+                                                "#username"
+                                            ).value;
+
+                                        let email =
+                                            document.querySelector(
+                                                "#email"
+                                            ).value;
+
+                                        let password =
+                                            document.querySelector(
+                                                "#password"
+                                            ).value;
+
+                                        const mailApi = `api/sendMail`;
+                                        fetch(mailApi, {
+                                            method: "POST",
+                                            headers: {
+                                                "X-CSRF-TOKEN": csrfToken,
+                                                Authorization: `Bearer ${token}`,
+                                                "Content-Type":
+                                                    "application/json",
+                                                Accept: "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                                username: username,
+                                                email: email,
+                                                password: password,
+                                            }),
+                                        })
+                                            .then((res) => res.json())
+                                            .then((data) => {
+                                                console.log(data);
+                                            })
+                                            .catch((error) => {
+                                                console.error("Error:", error);
+                                            });
+
+                                        createResponseMessage(
+                                            data.message,
+                                            formContainer,
+                                            "success"
+                                        );
+                                    } else {
+                                        createResponseMessage(
+                                            data.message,
+                                            formContainer,
+                                            "fail"
+                                        );
+                                    }
                                 });
                         }
                     });
